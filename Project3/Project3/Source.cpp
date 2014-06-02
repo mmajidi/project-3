@@ -6,7 +6,6 @@
 #include <string>
 
 
-
 typedef NTSTATUS (NTAPI *_NtQueryInformationProcess)(
     HANDLE ProcessHandle,
     DWORD ProcessInformationClass,
@@ -65,23 +64,9 @@ int main(int argc, char* argv[])
     UNICODE_STRING commandLine;
     WCHAR *commandLineContents;
 	char aaa[100];
-	// time
+	    time_t now = time (0);
 
-	struct tm *newtime;
-        char am_pm[] = "AM";
-        time_t long_time;
 
-        time( &long_time );                /* Get time as long integer. */
-        newtime = localtime( &long_time ); /* Convert to local time. */
-
-        if( newtime->tm_hour > 12 )        /* Set up extension. */
-                strcpy( am_pm, "PM" );
-        if( newtime->tm_hour > 12 )        /* Convert from 24-hour */
-                newtime->tm_hour -= 12;    /*   to 12-hour clock.  */
-        if( newtime->tm_hour == 0 )        /*Set hour to 12 if midnight. */
-                newtime->tm_hour = 12;
-
-   //time
 
     hSnap=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
 
@@ -98,8 +83,9 @@ int main(int argc, char* argv[])
 
 			        
 	
-	sprintf(aaa, "%.19s %s\n", asctime( newtime ), am_pm );
 
+
+	strftime(aaa, 100, "%Y-%m-%d %H %M %S.000", localtime (&now));
 	char s1[200]= "D:\\code\\";
 	char s2[100]= ".txt";
 
@@ -107,14 +93,13 @@ strcat(s1 , aaa);
 strcat(s1 , s2);
 
 
-hFile=CreateFile(s1,GENERIC_WRITE|FILE_APPEND_DATA,FILE_SHARE_WRITE,0,OPEN_ALWAYS
-	,FILE_ATTRIBUTE_NORMAL,0);
     
 
-		//char *sleep_Time = argv[2];
 	for (int i = 0; i < atoi(argv[1]) ; i++)
 	{
-	
+
+	hFile=CreateFile(s1,GENERIC_WRITE|FILE_APPEND_DATA,FILE_SHARE_WRITE,0,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0);
+
 	do {
 
           MODULEENTRY32 me;
@@ -186,7 +171,6 @@ hFile=CreateFile(s1,GENERIC_WRITE|FILE_APPEND_DATA,FILE_SHARE_WRITE,0,OPEN_ALWAY
 
 		 sprintf_s(buffer, "\n====================\nPID:%6d szmodule:%-15s szExePath:%s ParentPID:%6d CommandLine:%.*S\n",pe.th32ProcessID,me.szModule,me.szExePath, pe.th32ParentProcessID, commandLine.Length / 2, commandLineContents);
 		 WriteFile(hFile,buffer,strlen(buffer),&dwWritten,0);
-		 //printf("%s", buffer);
 
 
 
@@ -199,10 +183,14 @@ hFile=CreateFile(s1,GENERIC_WRITE|FILE_APPEND_DATA,FILE_SHARE_WRITE,0,OPEN_ALWAY
 
      } while (Process32Next(hSnap,&pe));
 
-Sleep (atoi(argv[2]));
-		}
-		 	CloseHandle(hFile);
+	
+	CloseHandle(hFile);
      CloseHandle(hSnap);
+
+	Sleep (atoi(argv[2]));
+
+		}
+
 	
 	
      return 0;
