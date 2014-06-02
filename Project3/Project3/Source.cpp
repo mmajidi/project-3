@@ -114,6 +114,19 @@ printf (" insert to argument");		}
 	for (int i = 0; i < atoi(argv[1]) ; ++i)
 	{
 
+		    hSnap=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
+
+    if (hSnap==INVALID_HANDLE_VALUE)
+
+         return 1;
+
+
+    pe.dwSize=sizeof(pe);
+
+    if (Process32First(hSnap, &pe))
+
+
+
 	now = time (0);
 	strftime(aaa, 100, "%Y-%m-%d %H %M %S.000", localtime (&now));
 
