@@ -83,8 +83,11 @@ int main(int argc, char* argv[])
  //               newtime->tm_hour = 12;
 
 
-
-	
+		if ( argc <= 1 || *argv == NULL  )
+		{
+			argc =1;
+			argv[1] = "a";
+printf (" insert to argument");		}
    //time
 
     hSnap=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
